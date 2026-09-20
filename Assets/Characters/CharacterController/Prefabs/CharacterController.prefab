@@ -199,6 +199,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8494612985901910308}
+  - component: {fileID: 3306702562511910623}
+  - component: {fileID: 2819842210423442767}
   m_Layer: 0
   m_Name: CharacterController
   m_TagString: Untagged
@@ -226,6 +228,30 @@ Transform:
   - {fileID: 2801387706076754736}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3306702562511910623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867725718345069822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e69a9f5103b0ec546aabc2e567b90d02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Controller
+--- !u!114 &2819842210423442767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867725718345069822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ea98e9f7b4debc40a0613a77a9c9020, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
 --- !u!1 &1040060966635361391
 GameObject:
   m_ObjectHideFlags: 0
