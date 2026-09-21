@@ -6,6 +6,7 @@ public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapAc
     private InputController inputController;
     public Vector2 movementInput;
     public Vector2 lookInput;
+    public bool jumpPressed;
 
     public void OnMovement(InputAction.CallbackContext context)
     {
@@ -15,6 +16,14 @@ public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapAc
     public void OnLook(InputAction.CallbackContext context)
     {
         lookInput = context.ReadValue<Vector2>();
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (!context.performed)
+            return;
+
+        jumpPressed = true;
     }
 
     private void OnEnable()
@@ -30,5 +39,10 @@ public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapAc
     {
         inputController.MovementMap.Disable();
         inputController.MovementMap.RemoveCallbacks(this);
+    }
+
+    private void LateUpdate()
+    {
+        jumpPressed = false;
     }
 }

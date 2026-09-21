@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,6 +22,12 @@ public class PlayerController : MonoBehaviour
     private Vector2 cameraRotation = Vector2.zero;
     private Vector2 playerTargetRotation = Vector2.zero;
 
+    public float gravity = 25f;
+    public float jumpSpeed = 1.0f;
+    public float verticalVelocity = 0f;
+    public enum MovementState {Jumping, Falling, Idle}
+    MovementState playerState = MovementState.Jumping;
+
     private void Awake()
     {
         inputController = GetComponent<PlayerMovementInput>();
@@ -28,6 +35,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        handleVerticalMovement();
+
         Vector3 cameraForwardXZ = new Vector3(playerCamera.transform.forward.x, 0f, playerCamera.transform.forward.z).normalized;
         Vector3 cameraRightXZ = new Vector3(playerCamera.transform.right.x, 0f, playerCamera.transform.right.z).normalized;
 
@@ -36,6 +45,7 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDelta = moveDirection * runAcceleration;
         Vector3 newVelocity = characterController.velocity + moveDelta;
         newVelocity = Vector3.ClampMagnitude(newVelocity, runSpeed);
+        newVelocity.y += verticalVelocity;
 
         Vector3 currentDrag = newVelocity.normalized * drag * Time.deltaTime;
         if (newVelocity.magnitude > drag * Time.deltaTime)
@@ -57,5 +67,39 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, playerTargetRotation.x, 0f);
 
         playerCamera.transform.rotation = Quaternion.Euler(cameraRotation.y, cameraRotation.x, 0f);
+    }
+
+    private void handleVerticalMovement()
+    {
+        bool isGrounded = getIsGrounded();
+
+        if (isGrounded && verticalVelocity < 0)
+        {
+            verticalVelocity = 0f;
+        }
+
+        verticalVelocity -= gravity * Time.deltaTime;
+
+        if (inputController.jumpPressed && isGrounded)
+        {
+            verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
+        }
+    }
+    private void UpdateMovementState()
+    {
+        bool isGrounded = getIsGrounded();
+
+        if (!isGrounded && characterController.velocity.y > 0f)
+        {
+            playerState = MovementState.Jumping;
+        } else if (!isGrounded && characterController.velocity.y < 0f)
+        {
+            playerState = MovementState.Falling;
+        }
+    }
+
+    private bool getIsGrounded()
+    {
+        return characterController.isGrounded;
     }
 }
