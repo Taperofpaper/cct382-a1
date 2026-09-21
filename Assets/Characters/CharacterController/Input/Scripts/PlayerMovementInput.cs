@@ -1,15 +1,20 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class NewMonoBehaviourScript : MonoBehaviour, InputController.IMovementMapActions
+public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapActions
 {
-    public InputController inputController;
+    private InputController inputController;
     public Vector2 movementInput;
+    public Vector2 lookInput;
 
     public void OnMovement(InputAction.CallbackContext context)
     {
         movementInput = context.ReadValue<Vector2>();
-        print(movementInput);
+    }
+
+    public void OnLook(InputAction.CallbackContext context)
+    {
+        lookInput = context.ReadValue<Vector2>();
     }
 
     private void OnEnable()
