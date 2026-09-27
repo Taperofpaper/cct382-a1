@@ -121,6 +121,16 @@ public partial class @InputController: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""initialStateCheck"": false,
                     ""priority"": 0
+                },
+                {
+                    ""name"": ""Run"",
+                    ""type"": ""Button"",
+                    ""id"": ""15bc5dec-32b0-4a10-a893-03d4ee671840"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false,
+                    ""priority"": 0
                 }
             ],
             ""bindings"": [
@@ -255,6 +265,17 @@ public partial class @InputController: IInputActionCollection2, IDisposable
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""479547a7-8f3a-4b36-9cc0-6ca00c5aa17d"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Run"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -266,6 +287,7 @@ public partial class @InputController: IInputActionCollection2, IDisposable
         m_MovementMap_Movement = m_MovementMap.FindAction("Movement", throwIfNotFound: true);
         m_MovementMap_Look = m_MovementMap.FindAction("Look", throwIfNotFound: true);
         m_MovementMap_Jump = m_MovementMap.FindAction("Jump", throwIfNotFound: true);
+        m_MovementMap_Run = m_MovementMap.FindAction("Run", throwIfNotFound: true);
     }
 
     ~@InputController()
@@ -349,6 +371,7 @@ public partial class @InputController: IInputActionCollection2, IDisposable
     private readonly InputAction m_MovementMap_Movement;
     private readonly InputAction m_MovementMap_Look;
     private readonly InputAction m_MovementMap_Jump;
+    private readonly InputAction m_MovementMap_Run;
     /// <summary>
     /// Provides access to input actions defined in input action map "MovementMap".
     /// </summary>
@@ -372,6 +395,10 @@ public partial class @InputController: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "MovementMap/Jump".
         /// </summary>
         public InputAction @Jump => m_Wrapper.m_MovementMap_Jump;
+        /// <summary>
+        /// Provides access to the underlying input action "MovementMap/Run".
+        /// </summary>
+        public InputAction @Run => m_Wrapper.m_MovementMap_Run;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -407,6 +434,9 @@ public partial class @InputController: IInputActionCollection2, IDisposable
             @Jump.started += instance.OnJump;
             @Jump.performed += instance.OnJump;
             @Jump.canceled += instance.OnJump;
+            @Run.started += instance.OnRun;
+            @Run.performed += instance.OnRun;
+            @Run.canceled += instance.OnRun;
         }
 
         /// <summary>
@@ -427,6 +457,9 @@ public partial class @InputController: IInputActionCollection2, IDisposable
             @Jump.started -= instance.OnJump;
             @Jump.performed -= instance.OnJump;
             @Jump.canceled -= instance.OnJump;
+            @Run.started -= instance.OnRun;
+            @Run.performed -= instance.OnRun;
+            @Run.canceled -= instance.OnRun;
         }
 
         /// <summary>
@@ -488,5 +521,12 @@ public partial class @InputController: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnJump(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Run" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnRun(InputAction.CallbackContext context);
     }
 }

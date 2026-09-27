@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Camera playerCamera;
+    [SerializeField] Animator animator;
 
     private PlayerMovementInput inputController;
 
@@ -25,6 +26,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = 25f;
     public float jumpSpeed = 1.0f;
     public float verticalVelocity = 0f;
+    public bool isGrounded = true;
     public enum MovementState {Jumping, Falling, Idle}
     MovementState playerState = MovementState.Jumping;
 
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        UpdateMovementState();
         handleVerticalMovement();
 
         Vector3 cameraForwardXZ = new Vector3(playerCamera.transform.forward.x, 0f, playerCamera.transform.forward.z).normalized;
@@ -43,6 +46,12 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = inputController.movementInput.x * cameraRightXZ + inputController.movementInput.y * cameraForwardXZ;
 
         Vector3 moveDelta = moveDirection * runAcceleration;
+        if (inputController.runPressed)
+        {
+            moveDelta = moveDirection * runAcceleration * 2;
+        }
+        print(moveDelta);
+
         Vector3 newVelocity = characterController.velocity + moveDelta;
         newVelocity = Vector3.ClampMagnitude(newVelocity, runSpeed);
         newVelocity.y += verticalVelocity;
@@ -57,6 +66,7 @@ public class PlayerController : MonoBehaviour
         }
 
         characterController.Move(newVelocity * Time.deltaTime);
+        animator.SetFloat("Speed", newVelocity.magnitude);
     }
     private void LateUpdate()
     {
@@ -71,23 +81,24 @@ public class PlayerController : MonoBehaviour
 
     private void handleVerticalMovement()
     {
-        bool isGrounded = getIsGrounded();
-
-        if (isGrounded && verticalVelocity < 0)
+        if (isGrounded)
         {
             verticalVelocity = 0f;
+        } else 
+        {
+            verticalVelocity -= gravity * Time.deltaTime;
         }
-
-        verticalVelocity -= gravity * Time.deltaTime;
 
         if (inputController.jumpPressed && isGrounded)
         {
+            isGrounded = false;
             verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
         }
     }
     private void UpdateMovementState()
     {
-        bool isGrounded = getIsGrounded();
+        if (playerState == MovementState.Falling && characterController.velocity.y == 0)
+            isGrounded = true;
 
         if (!isGrounded && characterController.velocity.y > 0f)
         {
@@ -96,10 +107,5 @@ public class PlayerController : MonoBehaviour
         {
             playerState = MovementState.Falling;
         }
-    }
-
-    private bool getIsGrounded()
-    {
-        return characterController.isGrounded;
     }
 }
