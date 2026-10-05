@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = 25f;
     public float jumpSpeed = 1.0f;
     public float verticalVelocity = 0f;
-    public bool isGrounded = true;
+    //public bool isGrounded = true;
     public enum MovementState {Jumping, Falling, Idle}
     MovementState playerState = MovementState.Jumping;
 
@@ -46,11 +46,6 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = inputController.movementInput.x * cameraRightXZ + inputController.movementInput.y * cameraForwardXZ;
 
         Vector3 moveDelta = moveDirection * runAcceleration;
-        if (inputController.runPressed)
-        {
-            moveDelta = moveDirection * runAcceleration * 2;
-        }
-        print(moveDelta);
 
         Vector3 newVelocity = characterController.velocity + moveDelta;
         newVelocity = Vector3.ClampMagnitude(newVelocity, runSpeed);
@@ -66,7 +61,7 @@ public class PlayerController : MonoBehaviour
         }
 
         characterController.Move(newVelocity * Time.deltaTime);
-        animator.SetFloat("Speed", newVelocity.magnitude);
+        animator.SetFloat("Speed", Mathf.Max(Mathf.Abs(newVelocity.x), Mathf.Abs(newVelocity.z)));
     }
     private void LateUpdate()
     {
@@ -81,29 +76,30 @@ public class PlayerController : MonoBehaviour
 
     private void handleVerticalMovement()
     {
-        if (isGrounded)
+        if (characterController.isGrounded)
         {
-            verticalVelocity = 0f;
+            verticalVelocity = -2f;
         } else 
         {
             verticalVelocity -= gravity * Time.deltaTime;
         }
 
-        if (inputController.jumpPressed && isGrounded)
+        if (inputController.jumpPressed && characterController.isGrounded)
         {
-            isGrounded = false;
+            //isGrounded = false;
+            animator.SetTrigger("Jump");
             verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
         }
     }
     private void UpdateMovementState()
     {
-        if (playerState == MovementState.Falling && characterController.velocity.y == 0)
-            isGrounded = true;
+        //if (playerState == MovementState.Falling && characterController.velocity.y == 0)
+        //    isGrounded = true;
 
-        if (!isGrounded && characterController.velocity.y > 0f)
+        if (!characterController.isGrounded && characterController.velocity.y > 0f)
         {
             playerState = MovementState.Jumping;
-        } else if (!isGrounded && characterController.velocity.y < 0f)
+        } else if (!characterController.isGrounded && characterController.velocity.y < 0f)
         {
             playerState = MovementState.Falling;
         }
