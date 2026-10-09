@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Animator animator;
 
     private PlayerMovementInput inputController;
+    public ParticleSystem dustObject;
 
     public float runAcceleration = 0.31f;
     public float runSpeed = 3.0f;
@@ -26,7 +27,6 @@ public class PlayerController : MonoBehaviour
     public float gravity = 25f;
     public float jumpSpeed = 1.0f;
     public float verticalVelocity = 0f;
-    //public bool isGrounded = true;
     public enum MovementState {Jumping, Falling, Idle}
     MovementState playerState = MovementState.Jumping;
 
@@ -60,6 +60,22 @@ public class PlayerController : MonoBehaviour
             newVelocity = Vector3.zero;
         }
 
+        if (inputController.crouchPressed)
+            newVelocity *= 0.5f;
+
+        if (newVelocity.magnitude > 2)
+        {
+            if (dustObject.isPlaying == false)
+            {
+                print(dustObject.isPlaying);
+                dustObject.Play();
+            }
+        }
+        else
+        {
+            dustObject.Stop();
+        }
+
         characterController.Move(newVelocity * Time.deltaTime);
         animator.SetFloat("Speed", Mathf.Max(Mathf.Abs(newVelocity.x), Mathf.Abs(newVelocity.z)));
     }
@@ -86,16 +102,17 @@ public class PlayerController : MonoBehaviour
 
         if (inputController.jumpPressed && characterController.isGrounded)
         {
-            //isGrounded = false;
             animator.SetTrigger("Jump");
             verticalVelocity += Mathf.Sqrt(jumpSpeed * 3 * gravity);
         }
+
+        if (characterController.isGrounded)
+        {
+            animator.SetBool("Crouch", inputController.crouchPressed);
+        } 
     }
     private void UpdateMovementState()
     {
-        //if (playerState == MovementState.Falling && characterController.velocity.y == 0)
-        //    isGrounded = true;
-
         if (!characterController.isGrounded && characterController.velocity.y > 0f)
         {
             playerState = MovementState.Jumping;

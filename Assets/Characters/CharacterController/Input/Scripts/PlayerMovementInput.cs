@@ -8,6 +8,7 @@ public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapAc
     public Vector2 lookInput;
     public bool jumpPressed;
     public bool runPressed;
+    public bool crouchPressed;
 
     public void OnMovement(InputAction.CallbackContext context)
     {
@@ -25,6 +26,17 @@ public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapAc
             return;
 
         jumpPressed = true;
+    }
+
+    public void OnCrouch(InputAction.CallbackContext context)
+    {
+        //if (!context.performed)
+        //    return;
+        if (context.performed)
+            crouchPressed = true;
+
+        if (context.canceled)
+            crouchPressed = false;
     }
 
     public void OnRun(InputAction.CallbackContext context)
@@ -54,5 +66,6 @@ public class PlayerMovementInput : MonoBehaviour, InputController.IMovementMapAc
     {
         jumpPressed = false;
         runPressed = false;
+        //crouchPressed = false;
     }
 }
