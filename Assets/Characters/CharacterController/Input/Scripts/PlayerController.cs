@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private CharacterController characterController;
     [SerializeField] private Camera playerCamera;
     [SerializeField] Animator animator;
-
+    [SerializeField] private GameObject raycastEmitter;
     private PlayerMovementInput inputController;
     public ParticleSystem dustObject;
 
@@ -67,7 +67,6 @@ public class PlayerController : MonoBehaviour
         {
             if (dustObject.isPlaying == false)
             {
-                print(dustObject.isPlaying);
                 dustObject.Play();
             }
         }
@@ -88,6 +87,8 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(0f, playerTargetRotation.x, 0f);
 
         playerCamera.transform.rotation = Quaternion.Euler(cameraRotation.y, cameraRotation.x, 0f);
+
+        raycastEmitter.transform.rotation = playerCamera.transform.rotation;
     }
 
     private void handleVerticalMovement()
